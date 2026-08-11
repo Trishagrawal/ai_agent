@@ -80,14 +80,14 @@ matters to know which applies to what you're doing:
   its own title/subheadline through normal placeholders, and every one
   of its decorative shapes' text through `text_replacements`. This is
   full editing of the real slide, not an approximation of it and not
-  limited to extracting one piece — verified working end-to-end on
-  slides 105 and 120 (see "Verified examples"), covering both a
-  multi-piece illustration (105's ring plus four separate corner
-  callouts) and a connected-chain illustration (120's five linked
-  badges). Nothing in the mechanism is specific to those two slides —
-  any of the 176 can be targeted the same way; 105/106/120 are simply
-  the ones already confirmed clean by an actual render, not the only
-  ones the tool supports.
+  limited to extracting one piece. The mechanism is identical for every
+  one of the 176 — `clone_slide` copies each top-level shape at its
+  original position, whether that's a multi-piece illustration (a ring
+  plus separate corner callouts) or a connected-chain illustration (a
+  row of linked badges). There is no per-slide allow-list: any of the
+  176 can be targeted the same way, and the worked examples further down
+  (slides 105/106/120) are just convenient demonstrations of the
+  mechanics, not the only slides the tool supports.
 
 `_clear_existing_slides` strips every one of these 176 reference slides
 (and the section grouping itself) from the in-memory copy before any new
@@ -110,17 +110,17 @@ placeholder text replaced.
 | Table Slides (87-94) | Tables and timetables | No native table support yet — fall back to `card_grid` (one card per row) or tell the user tables aren't supported, rather than improvising. |
 | Organigram Slides (95-99) | Org charts / hierarchy | `card_grid` (one card per role/box) or nested `process_steps` for a reporting chain. |
 | Numbers and factsheets (100-103) | KPI/stat callouts | `stat_row` for headline numbers; `card_grid` if each number needs its own descriptive card. |
-| Diagrams and Charts (104-114) | Circle segments, generic diagrams, bar charts, keynumbers | **Slides 105/106 (Circle Segments) are verified cloneable — see "Cloned visuals" below.** Slide 114 is a native chart — model your own chart on it, don't clone a chart object. |
-| Next Steps (115-120) | Numbered step chains, various layouts | **Slide 120 verified via `clone_slide` (whole-slide mode) — see "Cloned visuals" below. Single-shape `cloned_visual` mode is broken for it (rescaling distorts the badges); slides 116-119 aren't single groups and aren't individually verified either way — catalog+render before trusting them, or use `process_steps` instead.** |
+| Diagrams and Charts (104-114) | Circle segments, generic diagrams, bar charts, keynumbers | Clone the circle-segment / diagram slides directly (e.g. 105/106) via `clone_slide` — see "Cloned visuals" below. Slide 114 is a native chart — model your own chart on it, don't clone a chart object. |
+| Next Steps (115-120) | Numbered step chains, various layouts | Clone the step-chain slide directly via `clone_slide` (whole-slide mode — e.g. 120) — see "Cloned visuals" below. `clone_slide` clones every shape at its original size, so any slide in this range works; single-shape `cloned_visual` can distort a rescaled step group, so prefer whole-slide `clone_slide` (or `process_steps`) here. |
 | Division Style/Theme (121) | Single divider slide | Style reference only. |
-| Automotive Style (122-127) | Title/Chapter/Split Content slides re-skinned for Automotive | Not unique illustrations — these are the same 34 layouts. Signal to pair with the `automotive-*` icon set instead of the generic one. |
-| Retail Style (128-134) | Same pattern, Retail | Pair with `retail-*` icons. |
-| Real Estate Style (135-141) | Same pattern, Real Estate | Pair with `real-estate-*` icons. |
-| Finance Style (142-148) | Same pattern, Finance | Pair with `financial-services-*` icons. |
-| Health Style (149-155) | Same pattern, Health | No dedicated icon set yet — use the generic `icons/` set. |
-| Education Style (156-162) | Same pattern, Education | No dedicated icon set yet — use the generic `icons/` set. |
-| Corporate Style (163-169) | Same pattern, Corporate | Pair with `corporate-*` icons. |
-| Blue Style (170-176) | Same pattern, generic blue | Use the generic `icons/` set. |
+| Automotive Style (122-127) | Title/Chapter/Split Content slides re-skinned for Automotive | Not unique illustrations — these are the same 34 layouts. Signal to pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme). |
+| Retail Style (128-134) | Same pattern, Retail | Pull icons from `icons/dark/`/`icons/light/`. |
+| Real Estate Style (135-141) | Same pattern, Real Estate | Pull icons from `icons/dark/`/`icons/light/`. |
+| Finance Style (142-148) | Same pattern, Finance | Pull icons from `icons/dark/`/`icons/light/`. |
+| Health Style (149-155) | Same pattern, Health | Pull icons from `icons/dark/`/`icons/light/`. |
+| Education Style (156-162) | Same pattern, Education | Pull icons from `icons/dark/`/`icons/light/`. |
+| Corporate Style (163-169) | Same pattern, Corporate | Pull icons from `icons/dark/`/`icons/light/`. |
+| Blue Style (170-176) | Same pattern, generic blue | Pull icons from `icons/dark/`/`icons/light/`. |
 
 **In practice: sections 33-120 are where a genuinely useful illustration
 to clone might live (Diagrams and Charts, Next Steps especially); 121-176
@@ -207,8 +207,8 @@ being unavailable.
 
 | The content is... | Reach for... |
 |---|---|
-| A phased plan or proportional/parallel breakdown (rollout stages, capability pillars, budget split) | **`clone_slide`** of slide 105 or 106 (verified — see "Cloned visuals" below) |
-| A sequential chain of numbered steps that needs a hand-designed look, not just `process_steps` | **`clone_slide`** of slide 120 (verified) |
+| A phased plan or proportional/parallel breakdown (rollout stages, capability pillars, budget split) | **`clone_slide`** of a matching circle-segment / diagram slide (e.g. 105 or 106) — see "Cloned visuals" below |
+| A sequential chain of numbered steps that needs a hand-designed look, not just `process_steps` | **`clone_slide`** of a matching step-chain slide (e.g. 120) |
 | A sequence with a clear order (workflow, "how it works", roadmap) | **`process_steps`** diagram |
 | Parallel categories, each with its own short list | **`card_grid`** diagram (one call per column if the layout already splits into columns) |
 | A handful of feature/capability highlights, optionally each with a relevant icon | **`accent_list`** diagram |
@@ -386,62 +386,62 @@ because of it.
 | **Slide 118** — Next Steps (4-group diagram (4 text elements)) | Data/illustration slide — 4-group diagram (4 text elements), 8 fillable element(s) beyond the title and subheadline. Clone via `clone_slide: 118` to reuse this exact hand-designed composition for matching content in 'Next Steps'. | title(idx0); subheadline(idx13); 4 standalone text box(es); 4 illustration group(s) (group of 1 text(s), group of 1 text(s), group of 1 text(s), group of 1 text(s)); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Content Slide_empty_light` |
 | **Slide 119** — Next Steps (6-group diagram (6 text elements)) | Data/illustration slide — 6-group diagram (6 text elements), 12 fillable element(s) beyond the title and subheadline. Clone via `clone_slide: 119` to reuse this exact hand-designed composition for matching content in 'Next Steps'. | title(idx0); subheadline(idx13); 6 standalone text box(es); 6 illustration group(s) (group of 1 text(s), group of 1 text(s), group of 1 text(s), group of 1 text(s), group of 1 text(s), group of 1 text(s)); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Content Slide_empty_light` |
 | **Slide 120** — Next Steps (connected multi-part illustration (10 text elements across 1 group(s))) | Data/illustration slide — connected multi-part illustration (10 text elements across 1 group(s)), 10 fillable element(s) beyond the title and subheadline. Clone via `clone_slide: 120` to reuse this exact hand-designed composition for matching content in 'Next Steps'. | title(idx0); subheadline(idx13); 1 illustration group(s) (group of 10 text(s)); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Content Slide_empty_light` |
-| **Slide 121** — Division Style/Theme — Simple text layout | Same structure as the standard layout below, re-skinned for Division Style/Theme — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subtitle(idx1); 1 standalone text box(es); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Title Page_dark` |
-| **Slide 122** — Automotive Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pair with the `automotive-*` icon set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
-| **Slide 123** — Automotive Style — 4-item text layout [#123] | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pair with the `automotive-*` icon set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
-| **Slide 124** — Automotive Style — Simple text layout | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pair with the `automotive-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
-| **Slide 125** — Automotive Style — Simple text layout [#125] | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pair with the `automotive-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
-| **Slide 126** — Automotive Style — Simple text layout [#126] | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pair with the `automotive-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
-| **Slide 127** — Automotive Style — Simple text layout [#127] | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pair with the `automotive-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
-| **Slide 128** — Retail Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pair with the `retail-*` icon set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
-| **Slide 129** — Retail Style — 4-item text layout [#129] | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pair with the `retail-*` icon set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
-| **Slide 130** — Retail Style — Simple text layout | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pair with the `retail-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
-| **Slide 131** — Retail Style — Simple text layout [#131] | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pair with the `retail-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
-| **Slide 132** — Retail Style — Simple text layout [#132] | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pair with the `retail-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
-| **Slide 133** — Retail Style — Simple text layout [#133] | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pair with the `retail-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
-| **Slide 134** — Retail Style — Simple text layout [#134] | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pair with the `retail-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
-| **Slide 135** — Real Estate Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pair with the `real-estate-*` icon set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
-| **Slide 136** — Real Estate Style — 4-item text layout [#136] | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pair with the `real-estate-*` icon set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
-| **Slide 137** — Real Estate Style — Simple text layout | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pair with the `real-estate-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
-| **Slide 138** — Real Estate Style — Simple text layout [#138] | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pair with the `real-estate-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
-| **Slide 139** — Real Estate Style — Simple text layout [#139] | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pair with the `real-estate-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
-| **Slide 140** — Real Estate Style — Simple text layout [#140] | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pair with the `real-estate-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
-| **Slide 141** — Real Estate Style — Simple text layout [#141] | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pair with the `real-estate-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
-| **Slide 142** — Finance Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pair with the `financial-services-*` icon set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
-| **Slide 143** — Finance Style — 4-item text layout [#143] | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pair with the `financial-services-*` icon set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
-| **Slide 144** — Finance Style — Simple text layout | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pair with the `financial-services-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
-| **Slide 145** — Finance Style — Simple text layout [#145] | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pair with the `financial-services-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
-| **Slide 146** — Finance Style — Simple text layout [#146] | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pair with the `financial-services-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
-| **Slide 147** — Finance Style — Simple text layout [#147] | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pair with the `financial-services-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
-| **Slide 148** — Finance Style — Simple text layout [#148] | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pair with the `financial-services-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
-| **Slide 149** — Health Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
-| **Slide 150** — Health Style — 4-item text layout [#150] | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
-| **Slide 151** — Health Style — Simple text layout | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
-| **Slide 152** — Health Style — Simple text layout [#152] | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
-| **Slide 153** — Health Style — Simple text layout [#153] | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
-| **Slide 154** — Health Style — Simple text layout [#154] | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
-| **Slide 155** — Health Style — Simple text layout [#155] | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
-| **Slide 156** — Education Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
-| **Slide 157** — Education Style — 4-item text layout [#157] | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
-| **Slide 158** — Education Style — Simple text layout | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
-| **Slide 159** — Education Style — Simple text layout [#159] | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
-| **Slide 160** — Education Style — Simple text layout [#160] | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
-| **Slide 161** — Education Style — Simple text layout [#161] | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
-| **Slide 162** — Education Style — Simple text layout [#162] | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
-| **Slide 163** — Corporate Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pair with the `corporate-*` icon set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
-| **Slide 164** — Corporate Style — 4-item text layout [#164] | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pair with the `corporate-*` icon set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
-| **Slide 165** — Corporate Style — Simple text layout | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pair with the `corporate-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
-| **Slide 166** — Corporate Style — Simple text layout [#166] | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pair with the `corporate-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
-| **Slide 167** — Corporate Style — Simple text layout [#167] | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pair with the `corporate-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
-| **Slide 168** — Corporate Style — Simple text layout [#168] | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pair with the `corporate-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
-| **Slide 169** — Corporate Style — Simple text layout [#169] | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pair with the `corporate-*` icon set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
-| **Slide 170** — Blue Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
-| **Slide 171** — Blue Style — 4-item text layout [#171] | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
-| **Slide 172** — Blue Style — Simple text layout | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
-| **Slide 173** — Blue Style — Simple text layout [#173] | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
-| **Slide 174** — Blue Style — Simple text layout [#174] | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
-| **Slide 175** — Blue Style — Simple text layout [#175] | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
-| **Slide 176** — Blue Style — Simple text layout [#176] | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and use the generic `icons/` set instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
+| **Slide 121** — Division Style/Theme — Simple text layout | Same structure as the standard layout below, re-skinned for Division Style/Theme — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 1 standalone text box(es); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Title Page_dark` |
+| **Slide 122** — Automotive Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
+| **Slide 123** — Automotive Style — 4-item text layout [#123] | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
+| **Slide 124** — Automotive Style — Simple text layout | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
+| **Slide 125** — Automotive Style — Simple text layout [#125] | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
+| **Slide 126** — Automotive Style — Simple text layout [#126] | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
+| **Slide 127** — Automotive Style — Simple text layout [#127] | Same structure as the standard layout below, re-skinned for Automotive Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
+| **Slide 128** — Retail Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
+| **Slide 129** — Retail Style — 4-item text layout [#129] | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
+| **Slide 130** — Retail Style — Simple text layout | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
+| **Slide 131** — Retail Style — Simple text layout [#131] | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
+| **Slide 132** — Retail Style — Simple text layout [#132] | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
+| **Slide 133** — Retail Style — Simple text layout [#133] | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
+| **Slide 134** — Retail Style — Simple text layout [#134] | Same structure as the standard layout below, re-skinned for Retail Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
+| **Slide 135** — Real Estate Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
+| **Slide 136** — Real Estate Style — 4-item text layout [#136] | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
+| **Slide 137** — Real Estate Style — Simple text layout | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
+| **Slide 138** — Real Estate Style — Simple text layout [#138] | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
+| **Slide 139** — Real Estate Style — Simple text layout [#139] | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
+| **Slide 140** — Real Estate Style — Simple text layout [#140] | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
+| **Slide 141** — Real Estate Style — Simple text layout [#141] | Same structure as the standard layout below, re-skinned for Real Estate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
+| **Slide 142** — Finance Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
+| **Slide 143** — Finance Style — 4-item text layout [#143] | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
+| **Slide 144** — Finance Style — Simple text layout | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
+| **Slide 145** — Finance Style — Simple text layout [#145] | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
+| **Slide 146** — Finance Style — Simple text layout [#146] | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
+| **Slide 147** — Finance Style — Simple text layout [#147] | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
+| **Slide 148** — Finance Style — Simple text layout [#148] | Same structure as the standard layout below, re-skinned for Finance Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
+| **Slide 149** — Health Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
+| **Slide 150** — Health Style — 4-item text layout [#150] | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
+| **Slide 151** — Health Style — Simple text layout | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
+| **Slide 152** — Health Style — Simple text layout [#152] | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
+| **Slide 153** — Health Style — Simple text layout [#153] | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
+| **Slide 154** — Health Style — Simple text layout [#154] | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
+| **Slide 155** — Health Style — Simple text layout [#155] | Same structure as the standard layout below, re-skinned for Health Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
+| **Slide 156** — Education Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
+| **Slide 157** — Education Style — 4-item text layout [#157] | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
+| **Slide 158** — Education Style — Simple text layout | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
+| **Slide 159** — Education Style — Simple text layout [#159] | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
+| **Slide 160** — Education Style — Simple text layout [#160] | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
+| **Slide 161** — Education Style — Simple text layout [#161] | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
+| **Slide 162** — Education Style — Simple text layout [#162] | Same structure as the standard layout below, re-skinned for Education Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
+| **Slide 163** — Corporate Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
+| **Slide 164** — Corporate Style — 4-item text layout [#164] | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
+| **Slide 165** — Corporate Style — Simple text layout | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
+| **Slide 166** — Corporate Style — Simple text layout [#166] | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
+| **Slide 167** — Corporate Style — Simple text layout [#167] | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
+| **Slide 168** — Corporate Style — Simple text layout [#168] | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
+| **Slide 169** — Corporate Style — Simple text layout [#169] | Same structure as the standard layout below, re-skinned for Corporate Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
+| **Slide 170** — Blue Style — 4-item text layout | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_dark` |
+| **Slide 171** — Blue Style — 4-item text layout [#171] | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subtitle(idx1); 4 standalone text box(es); built on layout `Title Page with image_light` |
+| **Slide 172** — Blue Style — Simple text layout | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_dark` |
+| **Slide 173** — Blue Style — Simple text layout [#173] | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Chapter Slide_light` |
+| **Slide 174** — Blue Style — Simple text layout [#174] | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); built on layout `Split Content image_dark_1` |
+| **Slide 175** — Blue Style — Simple text layout [#175] | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_2` |
+| **Slide 176** — Blue Style — Simple text layout [#176] | Same structure as the standard layout below, re-skinned for Blue Style — use the standard layout directly and pull icons from `icons/dark/` or `icons/light/` (matched to the slide theme) instead of cloning this one. | title(idx0); subheadline(idx13); 1 OLE object (think-cell data, not clonable — skipped automatically); built on layout `Split Content image_dark_3` |
 **Balance, not sparseness — avoid a slide that's 3 short bullets floating
 in an otherwise empty dark rectangle.** A slide with only a handful of
 short bullet points and nothing else leaves most of the slide as bare
@@ -801,8 +801,8 @@ know which one you need before reaching for either:**
   underlying layout, so its title/subheadline are filled the normal way
   through `placeholders`, alongside the cloned decoration. **This is
   also strictly more reliable than `cloned_visual` for multi-piece
-  illustrations** — see the verified slide 120 example below, which is
-  broken under single-shape cloning (rescaling distorts it) but renders
+  illustrations** — see the slide 120 example below, which is broken
+  under single-shape cloning (rescaling distorts it) but renders
   perfectly under `clone_slide` (no rescaling happens at all).
 - **`cloned_visual` (single shape) — for lifting ONE self-contained
   illustration out of a reference slide into a placeholder on a
@@ -875,9 +875,9 @@ This is a full slide-level entry — same level as a normal `{"layout":
 placeholder. `placeholders` here fills ONLY the title/subheadline (idx0/
 idx13, which still exist as real placeholders on the cloned slide) — the
 rest of the content comes entirely from `text_replacements` against the
-cloned shapes. Verified end-to-end (built and visually inspected): the
-four standalone corner labels plus the four-segment ring both render
-correctly, matching the source slide's full design exactly.
+  cloned shapes. In this example the four standalone corner labels plus
+  the four-segment ring all render together, matching the source slide's
+  full design exactly.
 
 **3b. Or clone just one shape into a placeholder** (when you need it
 relocated onto a different layout):
@@ -934,68 +934,70 @@ relocated onto a different layout):
   inside) the OLE object, so this essentially never blocks cloning the
   illustration itself — just don't target the OLE shape's own id.
 
-### Verified examples — tested end-to-end, safe to use as-is
+### Worked examples — the clone mechanics on real slides
 
-Everything below was actually run through `build` and visually inspected
-in the rendered output, not just cataloged. Reach for these first before
-spending time cataloging your own candidate.
+The examples below show the exact `clone_slide` / `cloned_visual`
+mechanics on real reference slides. **They are illustrations of how
+cloning works, NOT a closed list of "the only slides you may clone."**
+Every one of the 176 reference slides is clonable through the same
+mechanism — `clone_slide` copies each top-level shape at its original
+position on the slide's own layout, so there is no per-slide allow-list
+and nothing special about the slides shown here beyond being convenient
+to demonstrate. Pick whichever reference slide actually matches your
+content from `reference_library_index.md`; use these as a template for
+how to write the `placeholders` + `text_replacements`, not as the set
+you're limited to.
 
-**Don't let "verified" become "the only one used."** This happened in
-practice — after slide 105 was documented here, it became the *only*
-cloned visual reached for across an entire deck, used repeatedly (or
-exclusively) instead of one option among several. Cloning is one
-technique among many for phased/proportional content, not a replacement
-for variety:
-- **Alternate between slide 105 (four segments) and slide 106 (six
-  segments)** rather than defaulting to whichever one was documented or
-  used first — pick based on how many segments the content actually
-  has, not habit.
+**Don't collapse onto one favorite slide.** This happened in practice —
+one circle-segment slide became the *only* cloned visual reached for
+across an entire deck, used repeatedly instead of one option among many.
+Cloning is one technique among several for phased/proportional content,
+not a replacement for variety:
+- **Pick the reference slide that fits the content** — e.g. a
+  four-segment vs. a six-segment circle based on how many segments the
+  content actually has, a step-chain slide for sequential content — not
+  whichever one you used last.
 - **Most decks should mix cloned visuals with the procedural diagram
   types** (`process_steps`, `card_grid`, `accent_list`, `stat_row`) and
   plain content — cloning a hand-designed illustration is for the
-  specific slide(s) where a phased/proportional shape is the best fit,
-  not the default treatment for every diagram-shaped slide in the deck.
-  A deck where every "diagrams" slide is the same cloned circle is a
-  different flavor of the same repetition problem this section exists
-  to fix.
+  specific slide(s) where that shape is the best fit, not the default
+  treatment for every diagram-shaped slide in the deck. A deck where
+  every "diagrams" slide is the same cloned circle is a different flavor
+  of the same repetition problem this section exists to fix.
 
-- **Slide 105 — "Circle Segments" (four segments). Verified via BOTH
-  modes.** As `clone_slide` (the fuller, recommended version): 4
-  standalone corner callouts + the 4-segment ring, 12 text replacements
-  in `catalog` order (4 standalone boxes first, then the ring group's 8:
+- **Slide 105 — "Circle Segments" (four segments).** Works via BOTH
+  modes. As `clone_slide` (the fuller, recommended version): 4 standalone
+  corner callouts + the 4-segment ring, 12 text replacements in `catalog`
+  order (4 standalone boxes first, then the ring group's 8:
   description/number ×4, clockwise from top). As `cloned_visual` (just
   the ring, shape_id 9, for relocating onto a different layout): 8
-  replacements, description/number ×4. Both confirmed clean in testing —
-  see the worked examples above/below.
+  replacements, description/number ×4.
 - **Slide 106, shape_id 75 — "Circle Segments" (six segments).** Same
   pattern as 105's ring, 6 segments, 12 replacements (description, number
   ×6) for the `cloned_visual` form. Slide 106 also has a second group
   (shape_id 76, six description-only captions below the ring) — for
   `clone_slide`, both are picked up automatically; for `cloned_visual`,
-  shape_id 75 alone is sufficient and is what was tested.
-- **Slide 120 — "Next Steps" (five steps). Verified via `clone_slide`
-  ONLY — do not use `cloned_visual`/single-shape mode for this one.**
-  This is the clearest illustration of why the two modes exist: as
-  `cloned_visual` (rescaling shape_id 74 to fit a different placeholder),
-  it renders BROKEN — badges misaligned, one missing entirely, because
-  rescaling distorts the group's internal child-shape proportions. As
-  `clone_slide` (no rescaling — the whole slide, kept at its original
-  size on its own native layout), it renders perfectly: all five
-  connected badges correctly positioned and labeled. **This means the
-  earlier "Next Steps slides aren't reliably cloneable" finding was
-  specific to single-shape/rescaled cloning, not cloning in general** —
-  `clone_slide` reopens the whole "Next Steps" section (115-120) as a
-  legitimate option for phased/sequential content, not just 105/106's
-  circle segments. 10 text replacements in `catalog` order: the group's
-  own internal order for the 5 numbers (check `catalog` — it is NOT
-  simply 01/02/03/04/05 in listed order, e.g. slide 120 lists
-  01/02/04/03/05), then the 5 descriptions in that same positional order.
-  **Get the number-to-description pairing from `catalog`'s exact order,
-  don't assume sequential** — this is the one detail that's easy to get
-  backwards (a test build with a naive sequential guess paired numbers
-  and descriptions incorrectly; the shapes still rendered correctly
-  positioned, just with mismatched pairs, which is entirely a
-  plan-authoring mistake, not a rendering defect).
+  shape_id 75 alone is enough.
+- **Slide 120 — "Next Steps" (five steps). Use `clone_slide`, not
+  `cloned_visual`, for this one.** This is the clearest illustration of
+  why the two modes exist: as `cloned_visual` (rescaling shape_id 74 to
+  fit a different placeholder), it renders BROKEN — badges misaligned,
+  one missing entirely, because rescaling distorts the group's internal
+  child-shape proportions. As `clone_slide` (no rescaling — the whole
+  slide, kept at its original size on its own native layout), it renders
+  perfectly: all five connected badges correctly positioned and labeled.
+  **The lesson generalizes: whenever a multi-piece illustration looks
+  wrong under `cloned_visual`, switch to `clone_slide` — the distortion
+  is a rescaling artifact of single-shape mode, not a property of the
+  slide.** 10 text replacements in `catalog` order: the group's own
+  internal order for the 5 numbers (check `catalog` — it is NOT simply
+  01/02/03/04/05 in listed order, e.g. slide 120 lists 01/02/04/03/05),
+  then the 5 descriptions in that same positional order. **Get the
+  number-to-description pairing from `catalog`'s exact order, don't
+  assume sequential** — this is the one detail that's easy to get
+  backwards (a naive sequential guess pairs numbers and descriptions
+  wrong even though every shape still renders in its correct position,
+  which is a plan-authoring mistake, not a rendering defect).
 
 ```json
 "14": {
@@ -1022,24 +1024,24 @@ principle that already applies to `process_steps`/`accent_list`. This
 scaling behavior only applies to `cloned_visual` — `clone_slide` never
 rescales at all, so it isn't a concern there.
 
-**Slides 116-119 still aren't cleanly usable via EITHER mode** — they
-aren't single groups (the numbers, icons, and text are separate
-top-level shapes with no wrapping group), so there's no one
-`source_shape_id` for `cloned_visual` to target, and even under
-`clone_slide` (which picks up every top-level shape) they haven't been
-individually verified the way 105/106/120 have. `catalog` one of these,
-build it, and actually render it before trusting the result — or default
-to the procedural `process_steps` diagram, which is reliable and already
-AFG-styled, for next-steps content that doesn't map to slide 120's
-specific five-step design.
+**When a slide's pieces aren't wrapped in a single group** (e.g. slides
+116-119, where the numbers, icons, and text are separate top-level
+shapes), there's no single `source_shape_id` for `cloned_visual` to
+target — so use `clone_slide` instead, which picks up every top-level
+shape at its original position and handles exactly this case. This is
+the normal reason to prefer `clone_slide`, not a reason to avoid the
+slide. If a particular clone doesn't come out right, `process_steps` is
+always available as an already-AFG-styled fallback.
 
-**This is the general rule for cloning anything not on the verified list
-above: catalog it, clone it, build the file, and actually look at the
-rendered slide before including it in what you show the user.** A
-cataloged shape list can look complete and still scale badly under
-`cloned_visual`, or pair text incorrectly if you guess at ordering
-instead of reading `catalog`'s exact sequence — the failure only shows
-up in the render, not in `catalog`'s text output.
+**General rule for the whole reference library: `clone_slide` works on
+any of the 176 slides — none are off-limits and none need to be on a
+pre-approved list.** `cloned_visual` is the narrower tool (single shape,
+rescaled into another layout) and is the only one with a real caveat:
+because it rescales, complex multi-piece groups can distort, so prefer
+`clone_slide` for those. Read `catalog`'s exact shape/text order when
+writing `text_replacements` so pairing and ordering come out right — the
+one thing that a clean-looking `catalog` listing won't guarantee on its
+own.
 
 ### Amending a slide that has a cloned visual
 
@@ -1533,10 +1535,10 @@ than defaulting to the plainest option on every slide:
    with no procedural diagrams and no other reference slides at all.**
    Cloning is one option among many across all 176, not a replacement
    for the diagram-type variety this section already asks for, and not
-   a reason to fixate on the two or three slide numbers that happen to
-   be documented as pre-verified — alternate across the full table based
-   on what each slide's content actually is, not on which examples were
-   easiest to remember.
+  a reason to fixate on the two or three slide numbers that happen to
+  be shown as worked examples — alternate across the full table based
+  on what each slide's content actually is, not on which examples were
+  easiest to remember.
 
 ## After running the script — the warning list is a gate, not a suggestion
 

@@ -422,12 +422,52 @@ def _is_bundled_icon_path(image_path):
     return "icons/" in normalized or normalized.startswith("icons/")
 
 
-def _set_image(ph, image_path, warnings, slide_num, idx):
+def _resolve_icon_path(image_path, theme):
+    """
+    The bundled icon set ships as two theme-matched variants of the same
+    icons: `icons/dark/` (icons drawn to read on dark navy slides) and
+    `icons/light/` (icons drawn to read on white slides). This routes an
+    icon path to the subfolder matching the slide it actually lands on, so
+    the deck stays theme-consistent automatically:
+
+    - `icons/light/speed.png` on a dark slide  -> `icons/dark/speed.png`
+    - `icons/speed.png` (no subfolder)          -> `icons/<theme>/speed.png`
+    - `images/hero.jpg`, absolute paths, URLs   -> returned unchanged
+
+    Only paths under `icons/` are touched. Regular photos/illustrations in
+    `images/` are theme-neutral and left exactly as given. This assumes the
+    same filename exists in both `dark/` and `light/`; the caller falls back
+    to the original path if the resolved one can't be loaded, so a one-off
+    icon that only lives in one folder still works.
+    """
+    if theme not in ("dark", "light"):
+        return image_path
+    normalized = image_path.replace("\\", "/")
+    if not _is_bundled_icon_path(normalized):
+        return image_path
+    marker = "icons/"
+    i = normalized.find(marker)
+    prefix = normalized[: i + len(marker)]   # "" or e.g. "assets/icons/"
+    rest = normalized[i + len(marker):]      # "dark/speed.png" or "speed.png"
+    head, _, tail = rest.partition("/")
+    if head in ("dark", "light"):
+        filename = tail
+    else:
+        filename = rest
+    if not filename:
+        return image_path
+    return f"{prefix}{theme}/{filename}"
+
+
+def _set_image(ph, image_path, warnings, slide_num, idx, theme=None):
     if not _is_picture_ph(ph):
         raise PlanError(
             f"Slide {slide_num} idx {idx}: plan supplies an image but this placeholder "
             f"is not a picture placeholder. Never write an image into a text placeholder."
         )
+    original_path = image_path
+    if theme is not None:
+        image_path = _resolve_icon_path(image_path, theme)
     if _is_bundled_icon_path(image_path) and ph.width and ph.height:
         area = ph.width * ph.height
         if area > HERO_SLOT_AREA_THRESHOLD:
@@ -442,7 +482,20 @@ def _set_image(ph, image_path, warnings, slide_num, idx):
     try:
         pic = ph.insert_picture(image_path)  # python-pptx crops to fill, preserving aspect ratio
     except Exception as e:
-        raise PlanError(f"Slide {slide_num} idx {idx}: failed to insert image '{image_path}': {e}")
+        # Fall back to the exact path the plan gave if the theme-resolved
+        # variant couldn't be loaded (e.g. an icon that only exists in one
+        # theme folder) -- never let path resolution turn a working image
+        # into a failed build.
+        if image_path != original_path:
+            try:
+                pic = ph.insert_picture(original_path)
+            except Exception as e2:
+                raise PlanError(
+                    f"Slide {slide_num} idx {idx}: failed to insert image "
+                    f"'{original_path}': {e2}"
+                )
+        else:
+            raise PlanError(f"Slide {slide_num} idx {idx}: failed to insert image '{image_path}': {e}")
 
     # The layout's placeholder-prompt definition ("Click to insert
     # picture") carries its own solid fill (a visible gray/accent box
@@ -1231,9 +1284,12 @@ def _draw_card_grid(slide, left, top, width, height, items, palette, idx):
 
     Each card gets a thin colored accent bar across its top edge
     automatically (matching the reference library's fact-card treatment).
-    Optionally give an item an `"icon"` field (a path into `icons/` or
-    `images/`) to place a small icon beside its title -- use this the same
-    way `accent_list`'s icon field works: only when it genuinely adds
+    Optionally give an item an `"icon"` field (a path into `icons/dark/`,
+    `icons/light/`, or an `images/` file) to place a small icon beside its
+    title -- the icon is auto-routed to the `dark/`/`light/` variant that
+    matches this slide's theme (`_resolve_icon_path`), so you don't have to
+    hand-match it. Use this the same way `accent_list`'s icon field works:
+    only when it genuinely adds
     meaning, and consistently across every card in the same grid (all of
     them get an icon, or none do).
 
@@ -1341,6 +1397,7 @@ def _draw_card_grid(slide, left, top, width, height, items, palette, idx):
         icon_path = item.get("icon")
         title_indent = Pt(0)
         if icon_path:
+            icon_path = _resolve_icon_path(icon_path, _detect_theme(slide))
             icon_size = Pt(20 * margin_scale)
             icon_left = card_left + Pt(12 * margin_scale)
             icon_top = row_top + Pt(12 * margin_scale) + accent_h
@@ -1410,6 +1467,7 @@ def _draw_accent_list(slide, left, top, width, height, items, palette, idx):
         icon_path = item.get("icon")
 
         if icon_path:
+            icon_path = _resolve_icon_path(icon_path, _detect_theme(slide))
             icon_top = row_top + (row_h - icon_size) // 2
             pic = slide.shapes.add_picture(icon_path, left, icon_top, icon_size, icon_size)
             pic.name = _tag_name(idx, "ACCENT_ICON", i)
@@ -1846,7 +1904,7 @@ def fill_slide(slide, placeholders_plan, slide_num, warnings, template_path=None
                 )
             _set_text(ph, value, warnings, slide_num, idx, spec.get("bullet_style", "dot"))
         elif kind in IMAGE_TYPES:
-            _set_image(ph, value, warnings, slide_num, idx)
+            _set_image(ph, value, warnings, slide_num, idx, theme=_detect_theme(slide))
         elif kind in CHART_TYPES:
             _set_chart(slide, ph, spec, warnings, slide_num, idx)
         elif kind in DIAGRAM_TYPES:
