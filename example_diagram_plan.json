@@ -1,0 +1,229 @@
+{
+  "slides": [
+    {
+      "layout": "Split Content image_dark_1",
+      "placeholders": {
+        "0": {
+          "type": "text",
+          "value": "Power Apps + Power Automate"
+        },
+        "13": {
+          "type": "text",
+          "value": "The workflow engine for daily efficiency"
+        },
+        "14": {
+          "type": "diagram",
+          "diagram_type": "process_steps",
+          "items": [
+            {
+              "number": 1,
+              "title": "Power Apps",
+              "description": "Captures and updates data through intuitive forms"
+            },
+            {
+              "number": 2,
+              "title": "Power Automate",
+              "description": "Triggers approvals, notifications, and file movement"
+            },
+            {
+              "number": 3,
+              "title": "Business Outcome",
+              "description": "Faster decisions with fewer manual steps"
+            }
+          ]
+        },
+        "15": {
+          "type": "image",
+          "value": "images/p1.jpg"
+        }
+      }
+    },
+    {
+      "layout": "Split Content image_light_2",
+      "placeholders": {
+        "0": {
+          "type": "text",
+          "value": "Power Apps in One Line"
+        },
+        "13": {
+          "type": "text",
+          "value": "A low-code platform for custom apps"
+        },
+        "14": {
+          "type": "diagram",
+          "diagram_type": "card_grid",
+          "items": [
+            {
+              "title": "Rapid Creation",
+              "description": "Minimal coding required"
+            },
+            {
+              "title": "Microsoft 365",
+              "description": "Native integration"
+            },
+            {
+              "title": "Azure-Powered",
+              "description": "Enterprise-grade foundation"
+            }
+          ]
+        },
+        "15": {
+          "type": "image",
+          "value": "images/p2.jpg"
+        }
+      }
+    },
+    {
+      "layout": "Content Slide_3 columns_dark",
+      "placeholders": {
+        "0": {
+          "type": "text",
+          "value": "Retail Use Cases"
+        },
+        "13": {
+          "type": "text",
+          "value": "Improving store and customer operations"
+        },
+        "14": {
+          "type": "diagram",
+          "diagram_type": "card_grid",
+          "items": [
+            {
+              "title": "Store Operations",
+              "bullets": [
+                "Store audits",
+                "Visual merchandising checks",
+                "Compliance reporting"
+              ]
+            }
+          ]
+        },
+        "15": {
+          "type": "diagram",
+          "diagram_type": "card_grid",
+          "items": [
+            {
+              "title": "Inventory & Stock",
+              "bullets": [
+                "Inventory requests",
+                "Stock issue tracking",
+                "Store support tickets"
+              ]
+            }
+          ]
+        },
+        "16": {
+          "type": "diagram",
+          "diagram_type": "card_grid",
+          "items": [
+            {
+              "title": "Customer Experience",
+              "bullets": [
+                "Customer feedback",
+                "Service recovery actions",
+                "Promotion tracking"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "layout": "Split Content image_light_1",
+      "placeholders": {
+        "0": {
+          "type": "text",
+          "value": "Platform Capabilities"
+        },
+        "13": {
+          "type": "text",
+          "value": "What the platform gives you"
+        },
+        "14": {
+          "type": "diagram",
+          "diagram_type": "accent_list",
+          "items": [
+            {
+              "title": "Governance",
+              "description": "Centralized environment and access controls",
+              "icon": "icons/light/governance.png"
+            },
+            {
+              "title": "Scalability",
+              "description": "The same pattern extends across every business unit",
+              "icon": "icons/light/growth.png"
+            },
+            {
+              "title": "Support",
+              "description": "Backed by Microsoft's enterprise SLAs",
+              "icon": "icons/light/security.png"
+            }
+          ]
+        },
+        "15": {
+          "type": "image",
+          "value": "images/p1.jpg"
+        }
+      }
+    },
+    {
+      "layout": "Content Slide_1 column_dark",
+      "placeholders": {
+        "0": {
+          "type": "text",
+          "value": "Business Impact"
+        },
+        "13": {
+          "type": "text",
+          "value": "Illustrative benefits from adoption"
+        },
+        "14": {
+          "type": "diagram",
+          "diagram_type": "stat_row",
+          "items": [
+            {
+              "value": "70%",
+              "label": "Faster delivery"
+            },
+            {
+              "value": "3x",
+              "label": "Adoption growth"
+            },
+            {
+              "value": "40%",
+              "label": "Manual effort reduced"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "layout": "Content Slide_1 column_light",
+      "placeholders": {
+        "0": {
+          "type": "text",
+          "value": "Rollout Phases"
+        },
+        "13": {
+          "type": "text",
+          "value": "Four stages to full adoption"
+        },
+        "14": {
+          "type": "cloned_visual",
+          "source_slide": 105,
+          "source_shape_id": 9,
+          "text_replacements": [
+            "Discover priority use cases",
+            "01",
+            "Pilot with early adopters",
+            "02",
+            "Scale across business units",
+            "03",
+            "Govern and optimize",
+            "04"
+          ]
+        }
+      }
+    }
+  ]
+}

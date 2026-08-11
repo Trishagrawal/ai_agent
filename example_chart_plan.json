@@ -1,0 +1,17 @@
+{
+  "slides": [
+    {
+      "layout": "Content Slide_2 columns_dark",
+      "placeholders": {
+        "0":  {"type": "text", "value": "Business Impact & ROI"},
+        "13": {"type": "text", "value": "Projected results over 3 years"},
+        "14": {"type": "chart", "chart_type": "bar", "title": "Processing Time (days)",
+               "categories": ["Today", "Year 1", "Year 2"],
+               "series": {"Avg. approval time": [12, 5, 2]}},
+        "15": {"type": "chart", "chart_type": "pie", "title": "Use Case Mix",
+               "categories": ["Retail", "HR", "Facilities", "Procurement"],
+               "series": {"Share": [40, 25, 20, 15]}}
+      }
+    }
+  ]
+}

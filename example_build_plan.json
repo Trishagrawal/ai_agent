@@ -1,0 +1,144 @@
+{
+  "slides": [
+    {
+      "layout": "Title Page_dark",
+      "placeholders": {
+        "0": {
+          "type": "text",
+          "value": "Power Apps for AFG"
+        },
+        "1": {
+          "type": "text",
+          "value": "Accelerating Business Transformation"
+        }
+      }
+    },
+    {
+      "layout": "Content Slide_2 columns_dark",
+      "placeholders": {
+        "0": {
+          "type": "text",
+          "value": "Why Power Apps Matters"
+        },
+        "13": {
+          "type": "text",
+          "value": "Strategic value drivers"
+        },
+        "14": {
+          "type": "diagram",
+          "diagram_type": "card_grid",
+          "items": [
+            {
+              "title": "Speed",
+              "bullets": [
+                "Build apps in weeks, not months",
+                "Reduce reliance on manual spreadsheets"
+              ]
+            }
+          ]
+        },
+        "15": {
+          "type": "diagram",
+          "diagram_type": "card_grid",
+          "items": [
+            {
+              "title": "Cost",
+              "bullets": [
+                "Lower total development cost",
+                "Free up IT for higher-value work"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "layout": "Content Slide_3 columns_light",
+      "placeholders": {
+        "0": {
+          "type": "text",
+          "value": "Current Operational Challenges"
+        },
+        "13": {
+          "type": "text",
+          "value": "Where friction shows up today"
+        },
+        "14": {
+          "type": "diagram",
+          "diagram_type": "card_grid",
+          "items": [
+            {
+              "title": "Store Operations",
+              "description": "Manual store audit checklists slow every visit"
+            }
+          ]
+        },
+        "15": {
+          "type": "diagram",
+          "diagram_type": "card_grid",
+          "items": [
+            {
+              "title": "Approvals",
+              "description": "Paper-based approvals create bottlenecks"
+            }
+          ]
+        },
+        "16": {
+          "type": "diagram",
+          "diagram_type": "card_grid",
+          "items": [
+            {
+              "title": "Visibility",
+              "description": "Limited real-time visibility into store status"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "layout": "Content Slide_4 columns_dark",
+      "placeholders": {
+        "0": {
+          "type": "text",
+          "value": "Strategic Benefits"
+        },
+        "13": {
+          "type": "text",
+          "value": "Value delivered across the enterprise"
+        },
+        "14": {
+          "type": "image",
+          "value": "icons/dark/speed.png"
+        },
+        "15": {
+          "type": "text",
+          "value": "Cuts solution delivery time from months to weeks"
+        },
+        "16": {
+          "type": "image",
+          "value": "icons/dark/cost.png"
+        },
+        "17": {
+          "type": "text",
+          "value": "Lowers build cost versus traditional custom development"
+        },
+        "18": {
+          "type": "image",
+          "value": "icons/dark/productivity.png"
+        },
+        "19": {
+          "type": "text",
+          "value": "Frees IT capacity by shifting routine builds to citizen developers"
+        },
+        "20": {
+          "type": "image",
+          "value": "icons/dark/growth.png"
+        },
+        "21": {
+          "type": "text",
+          "value": "Scales the same app pattern across every business unit"
+        }
+      }
+    }
+  ]
+}

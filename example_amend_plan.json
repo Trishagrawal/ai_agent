@@ -1,0 +1,20 @@
+{
+  "edits": [
+    {
+      "slide_index": 2,
+      "placeholders": {
+        "13": {"type": "text", "value": "Updated: strategic value drivers"}
+      }
+    }
+  ],
+  "append_slides": [
+    {
+      "layout": "Thank you and contact_dark",
+      "placeholders": {
+        "13": {"type": "text", "value": "Let's build the roadmap together"},
+        "14": {"type": "text", "value": "Thank You!"},
+        "16": {"type": "bullets", "value": ["Jane Doe", "Power Platform Lead", "AFG Digital", "jane.doe@afg.com"]}
+      }
+    }
+  ]
+}
